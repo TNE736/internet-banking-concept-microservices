@@ -3,7 +3,7 @@ replicaCount: 1
 
 # Container image settings
 image:
-  repository: docker.io/YOUR_DOCKERHUB_USERNAME/core-banking-service
+  repository: tne736/core-banking-service
   tag: "latest"
   pullPolicy: IfNotPresent
 
