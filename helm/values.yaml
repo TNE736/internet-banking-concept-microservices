@@ -1,1 +1,27 @@
+# Number of pod replicas to run
+replicaCount: 1
 
+# Container image settings
+image:
+  repository: docker.io/YOUR_DOCKERHUB_USERNAME/core-banking-service
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+# Kubernetes Service settings
+service:
+  type: ClusterIP
+  port: 8092
+  targetPort: 8092
+
+# Resource requests and limits for the pod
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 1Gi
+
+# Environment variables for the container
+env:
+  SPRING_PROFILES_ACTIVE: "default"
