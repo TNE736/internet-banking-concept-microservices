@@ -1,19 +1,13 @@
-# Number of pod replicas to run
-replicaCount: 1
-
-# Container image settings
+# ✓ Everything configurable goes here
+replicaCount: 2
 image:
   repository: tne736/core-banking-service
-  tag: "latest"
+  tag: "2.0.0"
   pullPolicy: IfNotPresent
-
-# Kubernetes Service settings
 service:
   type: ClusterIP
   port: 8092
   targetPort: 8092
-
-# Resource requests and limits for the pod
 resources:
   requests:
     cpu: 250m
@@ -21,7 +15,3 @@ resources:
   limits:
     cpu: 500m
     memory: 1Gi
-
-# Environment variables for the container
-env:
-  SPRING_PROFILES_ACTIVE: "default"
