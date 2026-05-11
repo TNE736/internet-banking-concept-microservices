@@ -1,0 +1,99 @@
+{{- range $svc := list "serviceRegistry" "configServer" "apiGateway" "userService" "coreBankingService" "fundTransferService" "utilityPaymentService" }}
+{{- $config := index $.Values $svc }}
+{{- if $config.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $config.name }}
+  labels:
+    app: {{ $config.name }}
+    version: {{ $.Chart.AppVersion }}
+spec:
+  replicas: {{ $config.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ $config.name }}
+  strategy:
+    type: {{ $.Values.strategy.type }}
+    rollingUpdate:
+      maxSurge: {{ $.Values.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ $.Values.strategy.rollingUpdate.maxUnavailable }}
+  template:
+    metadata:
+      labels:
+        app: {{ $config.name }}
+        version: {{ $.Chart.AppVersion }}
+    spec:
+      containers:
+        - name: {{ $config.name }}
+          image: "{{ $config.image.repository }}:{{ $config.image.tag }}"
+          imagePullPolicy: {{ $config.image.pullPolicy }}
+
+          ports:
+            - containerPort: {{ $config.service.port }}
+
+          env:
+            # Use H2 in-memory database for smoke testing
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              value: "org.h2.Driver"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "sa"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: ""
+            - name: SPRING_JPA_DATABASE_PLATFORM
+              value: "org.hibernate.dialect.H2Dialect"
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: "create-drop"
+            - name: SPRING_FLYWAY_ENABLED
+              value: "false"
+            - name: SERVER_PORT
+              value: "{{ $config.service.port }}"
+            - name: SPRING_CLOUD_CONFIG_ENABLED
+              value: "false"
+            - name: EUREKA_CLIENT_ENABLED
+              value: "false"
+            {{- if eq $svc "userService" }}
+            # Keycloak configuration for user-service
+            - name: APP_CONFIG_KEYCLOAK_SERVER_URL
+              value: "http://localhost:8080"
+            - name: APP_CONFIG_KEYCLOAK_REALM
+              value: "master"
+            - name: APP_CONFIG_KEYCLOAK_CLIENTID
+              value: "admin-cli"
+            - name: APP_CONFIG_KEYCLOAK_CLIENT_SECRET
+              value: "dummy-secret"
+            # Feign client configuration
+            - name: SPRING_CLOUD_OPENFEIGN_CLIENT_CONFIG_DEFAULT_URL
+              value: "http://core-banking-service:8092"
+            {{- end }}
+
+          {{- if $config.resources }}
+          resources:
+            {{- toYaml $config.resources | nindent 12 }}
+          {{- end }}
+
+          {{- if and $config.healthCheck $config.healthCheck.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ $config.service.port }}
+            initialDelaySeconds: {{ $config.healthCheck.initialDelaySeconds }}
+            periodSeconds: {{ $config.healthCheck.periodSeconds }}
+            failureThreshold: {{ $config.healthCheck.failureThreshold }}
+            timeoutSeconds: {{ $config.healthCheck.timeoutSeconds | default 5 }}
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ $config.service.port }}
+            initialDelaySeconds: {{ $config.healthCheck.initialDelaySeconds }}
+            periodSeconds: {{ $config.healthCheck.periodSeconds }}
+            failureThreshold: {{ $config.healthCheck.failureThreshold }}
+            timeoutSeconds: {{ $config.healthCheck.timeoutSeconds | default 5 }}
+          {{- end }}
+
+{{- end }}
+{{- end }}
