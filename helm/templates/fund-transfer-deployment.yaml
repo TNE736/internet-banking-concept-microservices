@@ -2,24 +2,48 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: fund-transfer-service
+  name: {{ .Values.fundTransfer.name }}
 
 spec:
-  replicas: 2
+  replicas: {{ .Values.fundTransfer.replicas }}
+
+  strategy:
+    type: RollingUpdate
+
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
 
   selector:
     matchLabels:
-      app: fund-transfer-service
+      app: {{ .Values.fundTransfer.name }}
 
   template:
     metadata:
       labels:
-        app: fund-transfer-service
+        app: {{ .Values.fundTransfer.name }}
 
     spec:
       containers:
-        - name: fund-transfer-service
-          image: fund-transfer-service:v1
+        - name: {{ .Values.fundTransfer.name }}
+
+          image: "{{ .Values.fundTransfer.image }}:{{ .Values.fundTransfer.tag }}"
 
           ports:
-            - containerPort: 8080
+            - containerPort: {{ .Values.fundTransfer.port }}
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.fundTransfer.port }}
+
+            initialDelaySeconds: 10
+            periodSeconds: 5
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.fundTransfer.port }}
+
+            initialDelaySeconds: 20
+            periodSeconds: 10
