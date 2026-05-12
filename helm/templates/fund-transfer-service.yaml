@@ -1,1 +1,16 @@
+apiVersion: v1
+kind: Service
 
+metadata:
+  name: {{ .Values.fundTransfer.name }}
+
+spec:
+  selector:
+    app: {{ .Values.fundTransfer.name }}
+
+  ports:
+    - protocol: TCP
+      port: {{ .Values.fundTransfer.port }}
+      targetPort: {{ .Values.fundTransfer.port }}
+
+  type: ClusterIP
