@@ -1,1 +1,10 @@
+fundTransfer:
+  name: fund-transfer-service
 
+  replicas: 2
+
+  image: fund-transfer-service
+
+  tag: v2
+
+  port: 8080
