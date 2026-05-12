@@ -1,1 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
 
+metadata:
+  name: fund-transfer-service
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: fund-transfer-service
+
+  template:
+    metadata:
+      labels:
+        app: fund-transfer-service
+
+    spec:
+      containers:
+        - name: fund-transfer-service
+          image: fund-transfer-service:v1
+
+          ports:
+            - containerPort: 8080
