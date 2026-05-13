@@ -1,1 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
 
+metadata:
+  name: {{ .Values.userService.name }}
+
+spec:
+  replicas: {{ .Values.userService.replicas }}
+
+  strategy:
+    type: RollingUpdate
+
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+
+  selector:
+    matchLabels:
+      app: {{ .Values.userService.name }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.userService.name }}
+
+    spec:
+      containers:
+        - name: {{ .Values.userService.name }}
+
+          image: "{{ .Values.userService.image }}:{{ .Values.userService.tag }}"
+
+          ports:
+            - containerPort: {{ .Values.userService.port }}
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.userService.port }}
+
+            initialDelaySeconds: 10
+            periodSeconds: 5
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.userService.port }}
+
+            initialDelaySeconds: 20
+            periodSeconds: 10
