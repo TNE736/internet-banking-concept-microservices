@@ -19,3 +19,14 @@ apiGateway:
   tag: v1
 
   port: 8081
+
+coreBanking:
+  name: core-banking-service
+
+  replicas: 2
+
+  image: core-banking-service
+
+  tag: v1
+
+  port: 8082
