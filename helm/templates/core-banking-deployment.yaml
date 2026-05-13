@@ -1,1 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
 
+metadata:
+  name: {{ .Values.coreBanking.name }}
+
+spec:
+  replicas: {{ .Values.coreBanking.replicas }}
+
+  strategy:
+    type: RollingUpdate
+
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+
+  selector:
+    matchLabels:
+      app: {{ .Values.coreBanking.name }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.coreBanking.name }}
+
+    spec:
+      containers:
+        - name: {{ .Values.coreBanking.name }}
+
+          image: "{{ .Values.coreBanking.image }}:{{ .Values.coreBanking.tag }}"
+
+          ports:
+            - containerPort: {{ .Values.coreBanking.port }}
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.coreBanking.port }}
+
+            initialDelaySeconds: 10
+            periodSeconds: 5
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: {{ .Values.coreBanking.port }}
+
+            initialDelaySeconds: 20
+            periodSeconds: 10
