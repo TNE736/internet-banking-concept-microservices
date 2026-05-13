@@ -8,3 +8,14 @@ fundTransfer:
   tag: v2
 
   port: 8080
+
+apiGateway:
+  name: api-gateway-service
+
+  replicas: 2
+
+  image: api-gateway-service
+
+  tag: v1
+
+  port: 8081
