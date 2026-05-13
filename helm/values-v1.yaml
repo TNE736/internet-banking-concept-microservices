@@ -30,3 +30,14 @@ coreBanking:
   tag: v1
 
   port: 8082
+
+userService:
+  name: user-service
+
+  replicas: 2
+
+  image: user-service
+
+  tag: v1
+
+  port: 8083
