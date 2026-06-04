@@ -1,0 +1,8 @@
+# v2 - faulty version
+# image tag does not exist -> pod fails with ImagePullBackOff
+name: core-banking-service
+replicas: 1
+image: javatodev/core-banking-service:broken-nonexistent
+containerPort: 8092
+servicePort: 8092
+serviceType: ClusterIP
