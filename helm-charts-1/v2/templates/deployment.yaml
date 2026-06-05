@@ -17,15 +17,3 @@ spec:
         image: {{ .Values.image }}
         ports:
         - containerPort: {{ .Values.containerPort }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Values.name }}-svc
-spec:
-  selector:
-    app: {{ .Values.name }}
-  ports:
-  - port: {{ .Values.servicePort }}
-    targetPort: {{ .Values.containerPort }}
-  type: {{ .Values.serviceType }}

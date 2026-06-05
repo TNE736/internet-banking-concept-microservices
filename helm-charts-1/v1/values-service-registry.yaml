@@ -1,0 +1,7 @@
+# v1 - service-registry (Eureka)
+name: internet-banking-service-registry
+replicas: 1
+image: javatodev/internet-banking-service-registry:latest
+containerPort: 8761
+servicePort: 8761
+serviceType: ClusterIP

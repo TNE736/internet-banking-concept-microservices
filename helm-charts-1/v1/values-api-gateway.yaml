@@ -1,0 +1,7 @@
+# v1 - api-gateway
+name: internet-banking-api-gateway
+replicas: 1
+image: javatodev/internet-banking-api-gateway:latest
+containerPort: 8080
+servicePort: 8080
+serviceType: LoadBalancer

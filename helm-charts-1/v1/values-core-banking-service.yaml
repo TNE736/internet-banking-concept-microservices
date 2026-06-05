@@ -1,4 +1,4 @@
-# v1 - working version
+# v1 - core-banking-service (working)
 name: core-banking-service
 replicas: 1
 image: javatodev/core-banking-service:latest

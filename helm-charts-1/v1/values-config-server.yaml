@@ -1,0 +1,7 @@
+# v1 - config-server
+name: internet-banking-config-server
+replicas: 1
+image: javatodev/internet-banking-config-server:latest
+containerPort: 8888
+servicePort: 8888
+serviceType: ClusterIP

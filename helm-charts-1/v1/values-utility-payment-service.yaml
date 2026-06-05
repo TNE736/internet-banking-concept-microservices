@@ -1,0 +1,7 @@
+# v1 - utility-payment-service
+name: internet-banking-utility-payment-service
+replicas: 1
+image: javatodev/internet-banking-utility-payment-service:latest
+containerPort: 8084
+servicePort: 8084
+serviceType: ClusterIP

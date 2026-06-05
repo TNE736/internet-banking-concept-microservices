@@ -1,0 +1,7 @@
+# v1 - fund-transfer-service
+name: internet-banking-fund-transfer-service
+replicas: 1
+image: javatodev/internet-banking-fund-transfer-service:latest
+containerPort: 8083
+servicePort: 8083
+serviceType: ClusterIP
