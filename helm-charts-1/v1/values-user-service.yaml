@@ -1,7 +1,0 @@
-# v1 - user-service
-name: internet-banking-user-service
-replicas: 1
-image: javatodev/internet-banking-user-service:latest
-containerPort: 8081
-servicePort: 8081
-serviceType: ClusterIP
